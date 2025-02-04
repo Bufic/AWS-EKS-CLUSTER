@@ -1,0 +1,5 @@
+.terraform
+.terrform.lock.hcl
+*.tfvars
+.env
+node_modules
