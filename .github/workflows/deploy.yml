@@ -24,10 +24,10 @@ jobs:
 
       - name: Build and push frontend Docker image
         run: |
-          docker build -t bufic/dream-vacation-app-frontend:frontendv1 -f /home/bufic/AWS-EKS-CLUSTER/Dream-Vacation-App-main/backend
-          docker push bufic/dream-vacation-app-frontend:frontendv1
+          docker build -t bufic/dream-vacation-app-backend:backendv1 -f Dream-Vacation-App-main/backend/Dockerfile Dream-Vacation-App-main/frontend
+          docker push bufic/dream-vacation-app-backend:backendv1
 
       - name: Build and push backend Docker image
         run: |
-          docker build -t bufic/dream-vacation-app-backend:backendv1 -f /home/bufic/AWS-EKS-CLUSTER/Dream-Vacation-App-main/frontend
+          docker build -t bufic/dream-vacation-app-frontend:frontendv1 -f Dream-Vacation-App-main/frontend/Dockerfile Dream-Vacation-App-main/frontend
           docker push bufic/dream-vacation-app-backend:backendv1
