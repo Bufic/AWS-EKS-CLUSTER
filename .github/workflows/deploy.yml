@@ -77,15 +77,15 @@ jobs:
 
       - name: Build and push backend Docker image
         run: |
-          docker build -t bufic/dream-vacation-app:backend:${{ env.NEW_VERSION }} -t bufic/dream-vacation-app:backend:latest -f Dream-Vacation-App-main/backend/Dockerfile Dream-Vacation-App-main/backend
-          docker push bufic/dream-vacation-app:backend:${{ env.NEW_VERSION }}
-          docker push bufic/dream-vacation-app:backend:latest
+          docker build -t bufic/dream-vacation-app-backend:${{ env.NEW_VERSION }} -t bufic/dream-vacation-app-backend:latest -f Dream-Vacation-App-main/backend/Dockerfile Dream-Vacation-App-main/backend
+          docker push bufic/dream-vacation-app-backend:${{ env.NEW_VERSION }}
+          docker push bufic/dream-vacation-app-backend:latest
 
       - name: Build and push frontend Docker image
         run: |
-          docker build -t bufic/dream-vacation-app:frontend:${{ env.NEW_VERSION }} -t bufic/dream-vacation-app:frontend:latest -f Dream-Vacation-App-main/frontend/Dockerfile Dream-Vacation-App-main/frontend
-          docker push bufic/dream-vacation-app:frontend:${{ env.NEW_VERSION }}
-          docker push bufic/dream-vacation-app:frontend:latest
+          docker build -t bufic/dream-vacation-app-frontend:${{ env.NEW_VERSION }} -t bufic/dream-vacation-app-frontend:latest -f Dream-Vacation-App-main/frontend/Dockerfile Dream-Vacation-App-main/frontend
+          docker push bufic/dream-vacation-app-frontend:${{ env.NEW_VERSION }}
+          docker push bufic/dream-vacation-app-frontend:latest
 
       - name: Create and push Git tag
         run: |
