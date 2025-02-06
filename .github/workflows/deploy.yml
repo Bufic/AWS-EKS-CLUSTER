@@ -88,6 +88,9 @@ jobs:
           docker push bufic/dream-vacation-app-frontend:latest
 
       - name: Create and push Git tag
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
         run: |
-          git tag ${{ env.NEW_VERSION }}
-          git push origin ${{ env.NEW_VERSION }}
+          git tag v1.0.${{ github.run_number }}
+          git remote set-url origin https://Bufic:${{ secrets.GH_PAT }}@github.com/Bufic/AWS-EKS-CLUSTER.git
+          git push origin v1.0.${{ github.run_number }}
