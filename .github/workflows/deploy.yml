@@ -87,7 +87,7 @@ jobs:
           docker push bufic/dream-vacation-app-frontend:${{ env.NEW_VERSION }}
           docker push bufic/dream-vacation-app-frontend:latest
 
-      - name: Create and push Git tag
+      - name: Create and push Git tag Versioning
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
         run: |
