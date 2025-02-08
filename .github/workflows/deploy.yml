@@ -41,9 +41,10 @@ jobs:
            # Set up kubectl and eksctl
       - name: Install kubectl and eksctl
         run: |
-          curl -o kubectl https://s3.us-west-2.amazonaws.com/amazon-eks/1.27.0/2023-06-29/bin/linux/amd64/kubectl
-          chmod +x ./kubectl
-          sudo mv ./kubectl /usr/local/bin/
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+          sudo mv kubectl /usr/local/bin/
+          kubectl version --client
           curl -sSL "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_Linux_amd64.tar.gz" | tar -xz -C /tmp
           sudo mv /tmp/eksctl /usr/local/bin/
 
@@ -53,7 +54,7 @@ jobs:
 
         # Apply Kubernetes manifests
       - name: Apply Kubernetes manifests
-        run: kubectl apply -f /home/bufic/AWS-EKS-CLUSTER/Dream-Vacation-App-main/k8s-manifests
+        run: kubectl apply -f Dream-Vacation-App-main/k8s-manifest/
 
       # Deploy updated images to Kubernetes
       - name: Update deployments with latest images
