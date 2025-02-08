@@ -51,8 +51,12 @@ jobs:
       - name: Configure kubectl
         run: aws eks update-kubeconfig --region ${{ secrets.AWS_REGION }} --name fubara-eks-cluster
 
+        # Apply Kubernetes manifests
+      - name: Apply Kubernetes manifests
+        run: kubectl apply -f Dream-Vacation-App-main/k8s-manifest/
+
       # Deploy updated images to Kubernetes
-      - name: Deploy to EKS
+      - name: Update deployments with latest images
         run: |
           kubectl set image deployment/backend backend=bufic/dream-vacation-app:backend-$GIT_SHA -n default
           kubectl set image deployment/frontend frontend=bufic/dream-vacation-app:frontend-$GIT_SHA -n default
