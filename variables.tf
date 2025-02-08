@@ -52,22 +52,8 @@ variable "subnet_ids" {
   default     = []
 }
 
-variable "db_username" {
-  description = "Database admin username"
+variable "grafana_admin_password" {
+  description = "Admin password for Grafana"
   type        = string
-  sensitive   = true
-  default     = "admin"
-}
-
-variable "db_password" {
-  description = "Database admin password"
-  type        = string
-  sensitive   = true
-  default     = "VacationPassword123"
-}
-
-variable "db_name" {
-  description = "Database name"
-  type        = string
-  default     = "dream_vacation"
+  default     = "SecurePass123"
 }

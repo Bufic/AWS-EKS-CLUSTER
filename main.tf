@@ -65,6 +65,36 @@ module "eks" {
   subnet_ids = var.subnet_ids
 }
 
+data "aws_eks_cluster_auth" "cluster" {
+  name = module.eks.cluster_name
+}
+
+
+resource "helm_release" "kube_prometheus_stack" {
+  name       = "kube-prometheus-stack"
+  repository = "https://prometheus-community.github.io/helm-charts"
+  chart      = "kube-prometheus-stack"
+  namespace  = "monitoring"
+  create_namespace = true
+
+  set {
+    name  = "grafana.adminPassword"
+    value = var.grafana_admin_password
+  }
+
+  set {
+    name  = "grafana.service.type"
+    value = "LoadBalancer" # Expose Grafana on the internet
+  }
+
+  set {
+    name  = "prometheus.prometheusSpec.storageSpec"
+    value = ""  # No storage (Ephemeral)
+  }
+}
+
+
+
 # resource "aws_db_subnet_group" "rds_subnet_group" {
 #   name       = "fubara-rds-subnet-group"
 #   subnet_ids = var.subnet_ids

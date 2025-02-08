@@ -815,4 +815,142 @@ kubectl get svc frontend-service
 
 ## Conclusion
 
-At this point, my Dream Vacation App was successfully deployed to AWS EKS, using an AWS RDS MySQL database. The frontend was accessible via the LoadBalancer URL, and the backend was connected to the RDS instance.
+At this point, my Dream Vacation App was successfully deployed to AWS EKS, using an AWS RDS MySQL database. The frontend was accessible via the SVC LoadBalancer URL, and the backend was connected to the RDS instance.
+
+### Stage 4 (Automating Deployment with GitHub Actions)
+
+This step automates the deployment of the Dream Vacation App to the running AWS EKS cluster using GitHub Actions. The workflow ensures that every push to the main branch triggers a deployment process that:
+
+Checks out the code from GitHub.
+
+Configures AWS credentials for authentication.
+
+Logs into Docker Hub.
+
+Builds and pushes updated backend and frontend Docker images.
+
+Tags the images with both a commit-specific SHA and latest.
+
+##### Prerequisites
+
+1. AWS IAM credentials configured in GitHub Secrets (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION).
+2. Docker Hub account credentials stored in GitHub Secrets (DOCKER_USERNAME, DOCKER_PASSWORD).
+3. An AWS account with an EKS cluster already set up.
+
+#### GitHub Actions Workflow
+
+The workflow is defined in the root of the project directory (.github/workflows/deploy.yml) with the following structure:
+
+##### Trigger Condition
+
+The workflow runs automatically whenever there is a push to the main branch:
+
+```
+on:
+  push:
+    branches:
+      - main
+```
+
+##### Job Execution
+
+The workflow defines a single job `deploy` that runs on `ubuntu-latest`:
+
+```
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+```
+
+##### Step 1: Checkout Code
+
+The first step pulls the latest code from the repository:
+
+```
+- name: Checkout code
+  uses: actions/checkout@v4
+```
+
+##### Step 2: Configure AWS Credentials
+
+This step authenticates GitHub Actions with AWS:
+
+```
+- name: Configure AWS credentials
+  uses: aws-actions/configure-aws-credentials@v2
+  with:
+    aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    aws-region: ${{ secrets.AWS_REGION }}
+```
+
+##### Step 3: Login to Docker Hub
+
+The workflow logs into Docker Hub using credentials stored in GitHub Secrets:
+
+```
+- name: Login to Docker Hub
+  run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+```
+
+##### Step 4: Get Git Commit SHA
+
+To version the Docker images, the workflow extracts the short Git commit SHA:
+
+```
+- name: Get Git commit SHA
+  id: git_sha
+  run: echo "GIT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+```
+
+##### Step 5: Build and Push Backend Docker Image
+
+The backend Docker image is built and pushed with two tags:
+
+1. A specific version tag using the commit SHA (backend-<SHA>).
+
+2. A latest tag for convenience.
+
+```
+- name: Build and push backend Docker image
+  run: |
+    docker build -t bufic/dream-vacation-app:backend-$GIT_SHA -t bufic/dream-vacation-app:backend-latest -f Dream-Vacation-App-main/backend/Dockerfile Dream-Vacation-App-main/backend
+    docker push bufic/dream-vacation-app:backend-$GIT_SHA
+    docker push bufic/dream-vacation-app:backend-latest
+```
+
+##### Step 6: Build and Push Frontend Docker Image
+
+The frontend Docker image follows the same process as the backend:
+
+```
+- name: Build and push frontend Docker image
+  run: |
+    docker build -t bufic/dream-vacation-app:frontend-$GIT_SHA -t bufic/dream-vacation-app:frontend-latest -f Dream-Vacation-App-main/frontend/Dockerfile Dream-Vacation-App-main/frontend
+    docker push bufic/dream-vacation-app:frontend-$GIT_SHA
+    docker push bufic/dream-vacation-app:frontend-latest
+```
+
+### Deployment Verification
+
+Once the workflow completes, verify the deployment:
+
+1. ##### Check Docker Hub:
+
+   Ensure that the newly built images are pushed.
+
+2. #### Update Kubernetes Deployments:
+
+   Manually or through automation, update the Kubernetes manifests (k8s-manifest directory) to use the new images.
+
+   Apply the changes using kubectl apply -f k8s-manifest/.
+
+##### Monitor Logs:
+
+Use kubectl get pods to check pod statuses.
+
+Use kubectl logs <pod-name> to check logs for errors.
+
+##### Conclusion:
+
+This workflow streamlines the deployment process by automating the build, push, and deployment of updated application images to AWS EKS. It ensures a continuous and reliable deployment pipeline directly from GitHub.

@@ -29,3 +29,8 @@ output "subnet_ids" {
 output "node_security_group_id" {
   value = module.eks.node_security_group_id
 }
+
+output "grafana_url" {
+  description = "Grafana UI URL"
+  value       = "http://${helm_release.kube_prometheus_stack.metadata[0].name}.monitoring.svc.cluster.local:80"
+}
