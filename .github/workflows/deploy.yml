@@ -53,7 +53,7 @@ jobs:
 
         # Apply Kubernetes manifests
       - name: Apply Kubernetes manifests
-        run: kubectl apply -f Dream-Vacation-App-main/k8s-manifest/
+        run: kubectl apply -f /home/bufic/AWS-EKS-CLUSTER/Dream-Vacation-App-main/k8s-manifests
 
       # Deploy updated images to Kubernetes
       - name: Update deployments with latest images
