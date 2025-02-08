@@ -54,7 +54,8 @@ jobs:
 
         # Apply Kubernetes manifests
       - name: Apply Kubernetes manifests
-        run: kubectl apply -f Dream-Vacation-App-main/k8s-manifests/configmaps/
+        run: |
+          kubectl apply -f Dream-Vacation-App-main/k8s-manifests/configmaps/
           kubectl apply -f Dream-Vacation-App-main/k8s-manifests/backend/
           kubectl apply -f Dream-Vacation-App-main/k8s-manifests/frontend/
 
